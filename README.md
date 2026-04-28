@@ -3,9 +3,12 @@
 :globe_with_meridians: 项目形态：Web App  
 :books: 适用场景：教育时政整理 / 教招备考 / 教育类考试  
 :hammer_and_wrench: 技术栈：TRAE SOLO · React · Vite
+体验链接：https://edu-policy-app.vercel.app/
+
 
 <img width="1015" height="852" alt="image" src="https://github.com/user-attachments/assets/a068a498-5a91-43cd-bba0-d8504ba7893d" />
  
+
 
 :pushpin: 摘要
 
@@ -22,13 +25,18 @@
 
 <img width="1015" height="852" alt="image" src="https://github.com/user-attachments/assets/cec8a13f-787d-4688-80d1-7c523db0d34e" />
 
+
 <img width="1015" height="852" alt="image" src="https://github.com/user-attachments/assets/992b7c3a-9255-48de-be6b-35a2ddd77c98" />
+
 
 <img width="892" height="777" alt="image" src="https://github.com/user-attachments/assets/8b70f5a0-c56f-456c-85e1-c2cc6411e24f" />
 
+
 <img width="1015" height="852" alt="image" src="https://github.com/user-attachments/assets/4630c7ee-ed9f-40c0-ab09-7d6eeed6fb96" />
 
+
 <img width="1015" height="852" alt="image" src="https://github.com/user-attachments/assets/548dae77-df2b-4696-8147-d807e6221735" />
+
 
 ---
 
