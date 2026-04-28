@@ -1,0 +1,88 @@
+/* App.css - 使用Tailwind CSS类名替代 */
+
+.app {
+  @apply flex flex-col min-h-screen max-w-7xl mx-auto w-full px-4;
+}
+
+.app-header {
+  @apply bg-white dark:bg-dark p-4 mb-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg;
+}
+
+.app-header h1 {
+  @apply text-3xl font-bold text-primary mb-4 transition-all duration-300 hover:scale-105;
+}
+
+.app-header nav ul {
+  @apply list-none p-0 flex gap-4 justify-center flex-wrap;
+}
+
+.app-header nav ul li a {
+  @apply text-gray-700 dark:text-gray-200 text-decoration-none px-4 py-2 rounded-md transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:translate-y-[-2px];
+}
+
+.app-main {
+  @apply flex-1 mb-6;
+}
+
+.app-footer {
+  @apply bg-white dark:bg-dark p-4 rounded-lg shadow-md text-center text-gray-600 dark:text-gray-400 mt-auto transition-all duration-300 hover:shadow-lg;
+}
+
+/* 全局动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@media (max-width: 768px) {
+  .app-header nav ul {
+    @apply flex-col items-center;
+  }
+  
+  .app-header nav ul li a {
+    @apply block w-full text-center;
+  }
+}
+
+.rich-note-editor,
+.rich-note-content {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.rich-note-editor p,
+.rich-note-content p {
+  margin: 0 0 0.5em;
+}
+
+.rich-note-editor ul,
+.rich-note-content ul {
+  margin: 0.5em 0;
+  padding-left: 1.6em;
+  list-style-type: disc;
+  list-style-position: outside;
+}
+
+.rich-note-editor ol,
+.rich-note-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.8em;
+  list-style-type: decimal;
+  list-style-position: outside;
+}
+
+.rich-note-editor li,
+.rich-note-content li {
+  padding-left: 0.15em;
+  margin-bottom: 0.3em;
+}

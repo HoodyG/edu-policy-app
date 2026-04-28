@@ -1,0 +1,7 @@
+{
+  "name": "edu-policy-app",
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install"
+}

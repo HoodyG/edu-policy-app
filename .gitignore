@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+.vercel/
+.netlify/
+.idea/
+.edge-profile/
+.vscode/
+agency-agents/
+*.exe
+*.jpg
+*.log
