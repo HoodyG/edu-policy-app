@@ -19,10 +19,10 @@ const FloatingSidebarPanel = ({
         onClick={onClose}
         style={{
           position: 'fixed',
-          top: isMobile ? '72px' : 0,
+          top: isMobile ? 0 : 0,
           left: isMobile ? 0 : '80px',
           right: 0,
-          bottom: 0,
+          bottom: isMobile ? '72px' : 0,
           zIndex: 250,
           background: 'transparent'
         }}
@@ -31,7 +31,8 @@ const FloatingSidebarPanel = ({
         ref={panelRef}
         style={{
           position: 'fixed',
-          top: isMobile ? '84px' : '50%',
+          top: isMobile ? 'auto' : '50%',
+          bottom: isMobile ? '84px' : 'auto',
           left: isMobile ? '12px' : '100px',
           right: isMobile ? '12px' : 'auto',
           transform: isMobile ? 'none' : 'translateY(-50%)',

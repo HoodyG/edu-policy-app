@@ -1,5 +1,7 @@
 import { getQuestionStatsKey } from '../lib/questionUtils';
 
+import { useLayoutEffect } from 'react';
+
 const QuestionListSection = ({
   currentQuestions,
   fullScreenNews,
@@ -24,6 +26,8 @@ const QuestionListSection = ({
   setIsOptionListMenuOpen,
   isOptionListMenuOpen,
   syncEditorHtml,
+  handleEditorCompositionStart,
+  handleEditorCompositionEnd,
   applyRichTextCommand,
   optionNoteEditorRef,
   handleRetryQuestion,
@@ -33,6 +37,21 @@ const QuestionListSection = ({
   PlusIcon,
   UnorderedListIcon
 }) => {
+  useLayoutEffect(() => {
+    if (!optionNoteEditor.questionId || !optionNoteEditorRef.current) {
+      return;
+    }
+
+    if (document.activeElement === optionNoteEditorRef.current) {
+      return;
+    }
+
+    const nextHtml = optionNoteEditor.text || '';
+    if (optionNoteEditorRef.current.innerHTML !== nextHtml) {
+      optionNoteEditorRef.current.innerHTML = nextHtml;
+    }
+  }, [optionNoteEditor.questionId, optionNoteEditor.optionLetter, optionNoteEditor.text, optionNoteEditorRef]);
+
   if (currentQuestions.length === 0) {
     return null;
   }
@@ -457,7 +476,8 @@ const QuestionListSection = ({
                             contentEditable
                             suppressContentEditableWarning
                             onInput={() => syncEditorHtml('option')}
-                            dangerouslySetInnerHTML={{ __html: optionNoteEditor.text }}
+                            onCompositionStart={() => handleEditorCompositionStart('option')}
+                            onCompositionEnd={() => handleEditorCompositionEnd('option')}
                             style={{
                               width: '100%',
                               minHeight: '120px',

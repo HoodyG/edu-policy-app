@@ -1,3 +1,5 @@
+import { useLayoutEffect } from 'react';
+
 const NoteSection = ({
   hasNote,
   isNoteEditing,
@@ -12,6 +14,8 @@ const NoteSection = ({
   isMainListMenuOpen,
   noteEditorRef,
   syncEditorHtml,
+  handleEditorCompositionStart,
+  handleEditorCompositionEnd,
   handleAutoSaveNote,
   noteContent,
   handleDeleteNote,
@@ -23,6 +27,21 @@ const NoteSection = ({
   BoldIcon,
   UnorderedListIcon
 }) => {
+  useLayoutEffect(() => {
+    if (!isNoteEditing || !noteEditorRef.current) {
+      return;
+    }
+
+    if (document.activeElement === noteEditorRef.current) {
+      return;
+    }
+
+    const nextHtml = noteContent || '';
+    if (noteEditorRef.current.innerHTML !== nextHtml) {
+      noteEditorRef.current.innerHTML = nextHtml;
+    }
+  }, [isNoteEditing, noteContent, noteEditorRef]);
+
   if (!hasNote && !isNoteEditing) {
     return null;
   }
@@ -165,6 +184,8 @@ const NoteSection = ({
             contentEditable
             suppressContentEditableWarning
             onInput={() => syncEditorHtml('main')}
+            onCompositionStart={() => handleEditorCompositionStart('main')}
+            onCompositionEnd={() => handleEditorCompositionEnd('main')}
             onBlur={() => {
               setTimeout(() => {
                 if (noteSectionRef.current?.contains(document.activeElement)) {
@@ -174,7 +195,6 @@ const NoteSection = ({
                 handleAutoSaveNote();
               }, 0);
             }}
-            dangerouslySetInnerHTML={{ __html: noteContent }}
             style={{
               width: '100%',
               minHeight: isMobile ? '150px' : '180px',

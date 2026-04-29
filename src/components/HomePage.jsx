@@ -665,6 +665,16 @@ const EditIcon = ({ size = 18, color }) => (
   </StrokeIcon>
 );
 
+const TrashIcon = ({ size = 18, color }) => (
+  <StrokeIcon size={size} color={color}>
+    <path d="M4 7h16" />
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+    <path d="M6 7l1 13h10l1-13" />
+    <path d="M9 7V4h6v3" />
+  </StrokeIcon>
+);
+
 const GripIcon = () => (
   <StrokeIcon>
     <path d="M9 7h6" />
@@ -675,10 +685,10 @@ const GripIcon = () => (
 
 const RefreshIcon = ({ size = 18, color }) => (
   <StrokeIcon size={size} color={color}>
-    <path d="M21 12a9 9 0 0 0-15.2-6.5" />
-    <path d="M3 12a9 9 0 0 0 15.2 6.5" />
-    <path d="M5 3.5v5h5" />
-    <path d="M19 20.5v-5h-5" />
+    <path d="M4 4v5h5" />
+    <path d="M20 20v-5h-5" />
+    <path d="M20 9a8 8 0 0 0-13.3-3L4 9" />
+    <path d="M4 15a8 8 0 0 0 13.3 3L20 15" />
   </StrokeIcon>
 );
 
@@ -736,6 +746,7 @@ const HomePage = ({
   searchTerm,
   onSaveNews,
   onUpdateCard,
+  onDeleteCard,
   notes,
   setNotes,
   contentMarks,
@@ -800,6 +811,8 @@ const HomePage = ({
   const noteEditorRef = useRef(null);
   const noteSectionRef = useRef(null);
   const optionNoteEditorRef = useRef(null);
+  const noteCompositionRef = useRef(false);
+  const optionNoteCompositionRef = useRef(false);
   const aiPopupRef = useRef(null);
   const aiButtonRef = useRef(null);
   const sourcePopupRef = useRef(null);
@@ -1370,6 +1383,24 @@ const HomePage = ({
     }
   };
 
+  const handleDeleteCustomCard = () => {
+    if (!fullScreenNews || fullScreenNews.source !== '自定义' || !onDeleteCard) {
+      return;
+    }
+
+    const confirmed = window.confirm(`确定删除自定义卡片《${fullScreenNews.title}》吗？`);
+    if (!confirmed) {
+      return;
+    }
+
+    const result = onDeleteCard(fullScreenNews.id);
+    if (result?.ok === false) {
+      return;
+    }
+
+    closeFullScreen();
+  };
+
   const baseNewsList = useMemo(() => {
     if (homeListMode === 'saved') {
       return savedNews;
@@ -1475,9 +1506,12 @@ const HomePage = ({
       return;
     }
 
+    const nextNoteContent = sanitizeRichTextHtml(noteEditorRef.current?.innerHTML || noteContent);
+    setNoteContent(nextNoteContent);
+
     setNotes((prev) => ({
       ...prev,
-      [fullScreenNews.id]: sanitizeRichTextHtml(noteContent)
+      [fullScreenNews.id]: nextNoteContent
     }));
     setIsNoteEditing(false);
   };
@@ -1487,9 +1521,12 @@ const HomePage = ({
       return;
     }
 
+    const nextNoteContent = sanitizeRichTextHtml(noteEditorRef.current?.innerHTML || noteContent);
+    setNoteContent(nextNoteContent);
+
     setNotes((prev) => ({
       ...prev,
-      [fullScreenNews.id]: sanitizeRichTextHtml(noteContent)
+      [fullScreenNews.id]: nextNoteContent
     }));
     setIsNoteEditing(false);
   };
@@ -1619,10 +1656,40 @@ const HomePage = ({
 
   const syncEditorHtml = (editorType) => {
     if (editorType === 'main') {
+      if (noteCompositionRef.current) {
+        return;
+      }
       setNoteContent(sanitizeRichTextHtml(noteEditorRef.current?.innerHTML || ''));
       return;
     }
 
+    if (optionNoteCompositionRef.current) {
+      return;
+    }
+
+    setOptionNoteEditor((prev) => ({
+      ...prev,
+      text: sanitizeRichTextHtml(optionNoteEditorRef.current?.innerHTML || '')
+    }));
+  };
+
+  const handleEditorCompositionStart = (editorType) => {
+    if (editorType === 'main') {
+      noteCompositionRef.current = true;
+      return;
+    }
+
+    optionNoteCompositionRef.current = true;
+  };
+
+  const handleEditorCompositionEnd = (editorType) => {
+    if (editorType === 'main') {
+      noteCompositionRef.current = false;
+      setNoteContent(sanitizeRichTextHtml(noteEditorRef.current?.innerHTML || ''));
+      return;
+    }
+
+    optionNoteCompositionRef.current = false;
     setOptionNoteEditor((prev) => ({
       ...prev,
       text: sanitizeRichTextHtml(optionNoteEditorRef.current?.innerHTML || '')
@@ -1645,7 +1712,9 @@ const HomePage = ({
       id: optionNoteEditor.questionId,
       optionNotes: {
         ...(entry.items.find((item) => item.id === optionNoteEditor.questionId)?.optionNotes || {}),
-        [optionNoteEditor.optionLetter]: sanitizeRichTextHtml(optionNoteEditor.text)
+        [optionNoteEditor.optionLetter]: sanitizeRichTextHtml(
+          optionNoteEditorRef.current?.innerHTML || optionNoteEditor.text
+        )
       }
     }));
     closeOptionNoteEditor();
@@ -2174,7 +2243,7 @@ const HomePage = ({
             overflowY: 'auto',
             background: '#fff',
             borderRadius: isMobile ? '20px' : '24px',
-            padding: isMobile ? '18px 16px 120px' : '28px 30px 120px',
+            padding: isMobile ? '18px 30px 236px 44px' : '28px 30px 120px',
             boxShadow: '0 24px 56px rgba(13, 18, 27, 0.28)',
             position: 'relative'
           }} onClick={(event) => event.stopPropagation()}>
@@ -2185,7 +2254,7 @@ const HomePage = ({
               lineHeight: 1.6,
               color: '#1f2937',
               fontFamily: '"Noto Serif SC", serif',
-              paddingRight: '56px'
+              paddingRight: isMobile ? '44px' : '56px'
             }}>
               {fullScreenNews.title}
             </h1>
@@ -2346,6 +2415,20 @@ const HomePage = ({
                     </div>
                   )}
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      onClick={handleDeleteCustomCard}
+                      style={{
+                        padding: '10px 16px',
+                        borderRadius: '12px',
+                        border: '1px solid #fecaca',
+                        background: '#fff5f5',
+                        color: '#dc2626',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      删除卡片
+                    </button>
                     <button
                       type="button"
                       onClick={() => {
@@ -2761,6 +2844,8 @@ const HomePage = ({
                 setIsOptionListMenuOpen={setIsOptionListMenuOpen}
                 isOptionListMenuOpen={isOptionListMenuOpen}
                 syncEditorHtml={syncEditorHtml}
+                handleEditorCompositionStart={handleEditorCompositionStart}
+                handleEditorCompositionEnd={handleEditorCompositionEnd}
                 applyRichTextCommand={applyRichTextCommand}
                 optionNoteEditorRef={optionNoteEditorRef}
                 handleRetryQuestion={handleRetryQuestion}
@@ -2787,6 +2872,8 @@ const HomePage = ({
               isMainListMenuOpen={isMainListMenuOpen}
               noteEditorRef={noteEditorRef}
               syncEditorHtml={syncEditorHtml}
+              handleEditorCompositionStart={handleEditorCompositionStart}
+              handleEditorCompositionEnd={handleEditorCompositionEnd}
               handleAutoSaveNote={handleAutoSaveNote}
               noteContent={noteContent}
               handleDeleteNote={handleDeleteNote}
@@ -2827,22 +2914,24 @@ const HomePage = ({
               ×
             </button>
 
-            <LeftFloatingActions
-              isMobile={isMobile}
-              fullScreenNews={fullScreenNews}
-              handleOpenCardEditor={handleOpenCardEditor}
-              hasNote={hasNote}
-              setIsQuestionEditing={setIsQuestionEditing}
-              setEditingQuestionId={setEditingQuestionId}
-              setIsSortManagerOpen={setIsSortManagerOpen}
-              setIsNoteEditing={setIsNoteEditing}
+              <LeftFloatingActions
+                isMobile={isMobile}
+                fullScreenNews={fullScreenNews}
+                handleOpenCardEditor={handleOpenCardEditor}
+                handleDeleteCustomCard={handleDeleteCustomCard}
+                hasNote={hasNote}
+                setIsQuestionEditing={setIsQuestionEditing}
+                setEditingQuestionId={setEditingQuestionId}
+                setIsSortManagerOpen={setIsSortManagerOpen}
+                setIsNoteEditing={setIsNoteEditing}
               handleOpenQuestionEditor={handleOpenQuestionEditor}
               handleRetryAllQuestions={handleRetryAllQuestions}
               EditIcon={EditIcon}
               NoteIcon={NoteIcon}
-              PlusIcon={PlusIcon}
-              RefreshIcon={RefreshIcon}
-            />
+                PlusIcon={PlusIcon}
+                RefreshIcon={RefreshIcon}
+                TrashIcon={TrashIcon}
+              />
 
             <RightFloatingActions
               isMobile={isMobile}

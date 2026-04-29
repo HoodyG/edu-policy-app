@@ -50,7 +50,7 @@ const StackIcon = ({ color = '#7c3aed' }) => (
   </StrokeIcon>
 );
 
-const Timeline = ({ newsList, onAddCard, savedNews, onSaveNews, onRemoveSavedNews, onChangeHomeListMode, isMobile }) => {
+const Timeline = ({ newsList, onAddCard, savedNews, onSaveNews, onRemoveSavedNews, onChangeHomeListMode, onDeleteCard, isMobile }) => {
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCard, setNewCard] = useState({
     title: '',
@@ -230,7 +230,8 @@ const Timeline = ({ newsList, onAddCard, savedNews, onSaveNews, onRemoveSavedNew
   };
   const floatingPanelStyle = {
     position: 'fixed',
-    top: isMobile ? '84px' : '50%',
+    top: isMobile ? 'auto' : '50%',
+    bottom: isMobile ? '84px' : 'auto',
     left: isMobile ? '12px' : '100px',
     right: isMobile ? '12px' : 'auto',
     transform: isMobile ? 'none' : 'translateY(-50%)',
@@ -387,32 +388,35 @@ const Timeline = ({ newsList, onAddCard, savedNews, onSaveNews, onRemoveSavedNew
       background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
       minHeight: isMobile ? '72px' : '100vh',
       height: isMobile ? '72px' : '100vh',
-      padding: isMobile ? '10px 12px' : '24px 0',
+      padding: isMobile ? '10px 16px' : '24px 0',
       position: 'fixed',
       left: 0,
-      top: 0,
+      top: isMobile ? 'auto' : 0,
+      bottom: isMobile ? 0 : 'auto',
       right: isMobile ? 0 : 'auto',
       zIndex: 100,
       display: 'flex',
       flexDirection: isMobile ? 'row' : 'column',
       alignItems: 'center',
-      justifyContent: isMobile ? 'space-between' : 'flex-start',
-      gap: isMobile ? '10px' : '24px',
+      justifyContent: isMobile ? 'center' : 'flex-start',
+      gap: isMobile ? '28px' : '24px',
       boxShadow: '2px 0 10px rgba(0,0,0,0.08)'
     }}>
-      <div style={{
-        writingMode: isMobile ? 'horizontal-tb' : 'vertical-rl',
-        textOrientation: isMobile ? 'mixed' : 'upright',
-        fontSize: isMobile ? '20px' : '24px',
-        fontWeight: '700',
-        color: '#c41e3a',
-        letterSpacing: isMobile ? '0.08em' : '10px',
-        marginBottom: isMobile ? 0 : '24px',
-        fontFamily: '"Noto Serif SC", serif',
-        textShadow: '1px 1px 2px rgba(0,0,0,0.1)'
-      }}>
-        教育时政
-      </div>
+      {!isMobile && (
+        <div style={{
+          writingMode: 'vertical-rl',
+          textOrientation: 'upright',
+          fontSize: '24px',
+          fontWeight: '700',
+          color: '#c41e3a',
+          letterSpacing: '10px',
+          marginBottom: '24px',
+          fontFamily: '"Noto Serif SC", serif',
+          textShadow: '1px 1px 2px rgba(0,0,0,0.1)'
+        }}>
+          教育时政
+        </div>
+      )}
       
 
       
@@ -563,10 +567,10 @@ const Timeline = ({ newsList, onAddCard, savedNews, onSaveNews, onRemoveSavedNew
             onClick={() => setShowAiPopup(false)}
             style={{
               position: 'fixed',
-              top: isMobile ? '72px' : 0,
+              top: isMobile ? 0 : 0,
               left: isMobile ? 0 : '80px',
               right: 0,
-              bottom: 0,
+              bottom: isMobile ? '72px' : 0,
               zIndex: 250,
               background: 'transparent'
             }}
@@ -820,6 +824,31 @@ const Timeline = ({ newsList, onAddCard, savedNews, onSaveNews, onRemoveSavedNew
               >
                 <div style={{ fontWeight: 700, marginBottom: '4px' }}>{news.title}</div>
                 <div style={{ fontSize: '12px', color: '#7c3aed' }}>{news.date}</div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      const confirmed = window.confirm(`确定删除自定义卡片《${news.title}》吗？`);
+                      if (!confirmed) {
+                        return;
+                      }
+                      onDeleteCard?.(news.id);
+                    }}
+                    style={{
+                      border: '1px solid #fbcfe8',
+                      background: '#fff1f6',
+                      color: '#be185d',
+                      borderRadius: '999px',
+                      padding: '4px 10px',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    删除
+                  </button>
+                </div>
               </div>
             ))}
           </div>

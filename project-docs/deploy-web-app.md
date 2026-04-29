@@ -1,40 +1,29 @@
 # 教育时政项目发布说明
 
-## 目标
+## 现在最适合的方案
 
-让国内绝大多数人都能更稳定地打开这个 Web App，并且后续更新成本低。
-
----
-
-## 当前最推荐方案
-
-主方案：**GitHub + 腾讯 EdgeOne Pages**
+主方案：**腾讯云中国站 CloudBase 静态网站托管**
 
 原因：
 
-- 比 `vercel.app` 更适合给国内用户访问
-- 支持直接导入 GitHub 仓库
-- 支持 Vite 项目自动构建
-- 后续你继续 `git push` 就能自动更新
+- 你当前的国际站 EdgeOne Pages 已经卡在**中国大陆实名 / 自定义域名**这一步
+- 你想要的是：**国内用户尽量不用 VPN 也能打开**
+- CloudBase 中国站更适合先把网站放出来给国内访问
+- 你已经买了域名：`hoodyg.online`
 
-官方参考：
-
-- EdgeOne Pages 首页：<https://pages.edgeone.ai/>
-- Git 仓库导入：<https://pages.edgeone.ai/document/importing-a-git-repository>
-- Vite 部署：<https://pages.edgeone.ai/document/vite>
-- 自定义域名：<https://pages.edgeone.ai/document/custom-domain>
+> 先把网站放出来，再决定什么时候把 `hoodyg.online` 正式绑上去。
 
 ---
 
-## 一、项目现状
-
-当前 GitHub 仓库：
-
-- `https://github.com/HoodyG/edu-policy-app.git`
+## 一、当前项目现状
 
 本地项目目录：
 
 - `D:\trae\edu policies`
+
+当前构建产物目录：
+
+- `D:\trae\edu policies\dist`
 
 本地构建命令：
 
@@ -43,95 +32,126 @@ cd "D:\trae\edu policies"
 npm run build
 ```
 
+GitHub 仓库：
+
+- `https://github.com/HoodyG/edu-policy-app.git`
+
+当前已购买域名：
+
+- `hoodyg.online`
+
 ---
 
-## 二、EdgeOne Pages 部署步骤
+## 二、这次不要继续走国际站 EdgeOne Pages
 
-### 1. 登录 EdgeOne Pages
+原因很直接：
 
-打开：
+- `edgeone.cool` 默认域名国内访问体验不稳定
+- 国际站项目对你现在这类中国大陆身份接入自定义域名不友好
+- 你现在最重要的是：**先让别人能打开**
 
-- `https://pages.edgeone.ai/`
+所以这次先切换成：
 
-### 2. 导入 GitHub 仓库
+> **腾讯云中国站 CloudBase 静态网站托管**
 
-选择 Git 导入，连接 GitHub，然后选择仓库：
+官方文档：
 
-- `HoodyG/edu-policy-app`
+- 静态网站托管概述：<https://cloud.tencent.com/document/product/876/46900>
 
-官方说明里明确支持从 GitHub / GitLab / Bitbucket / Gitee 导入。
+---
 
-### 3. 构建配置
+## 三、最推荐的落地步骤
 
-建议填写：
+### 第 1 步：先用 CloudBase 的默认域名上线
 
-- Framework preset: `Vite`
-- Build command: `npm run build`
-- Output directory: `dist`
-- Production branch: `main`
+先不要急着绑定 `hoodyg.online`，先用平台默认域名把网站跑起来。
 
-Vite 官方和 EdgeOne 官方都支持这种标准配置。
+这样能先验证：
 
-### 4. 先用平台分配的项目域名
+- 国内网络能不能正常打开
+- 页面功能是否正常
+- 是否还存在国际站那种访问限制
 
-部署成功后，平台会给一个固定项目域名。  
-你可以先用这个域名测试访问稳定性，再决定是否绑定自己的域名。
+### 第 2 步：上传本地 `dist` 目录
 
-### 5. 如果要上自定义域名
+这次不建议你先折腾 Git 自动部署，先用最稳、最少变量的方式：
 
-后面建议绑定自己的域名，比如：
+> **直接上传 `dist` 目录**
 
-- `edu.xxx.com`
-- `policy.xxx.com`
+也就是：
+
+- 本地先执行 `npm run build`
+- 然后把 `D:\trae\edu policies\dist` 作为静态网站内容上传
+
+### 第 3 步：等默认域名验证通过后，再考虑绑定 `hoodyg.online`
+
+这一步先不要强上。
+
+因为如果后面要让 `hoodyg.online` 作为正式国内可访问域名，通常还会涉及：
+
+- 域名实名认证
+- ICP 备案
+- 备案接入资源
+
+---
+
+## 四、CloudBase 静态网站托管的实际操作
+
+### 1. 打开腾讯云中国站 CloudBase
+
+进入腾讯云中国站控制台，找到：
+
+- **云开发 CloudBase**
+- **静态网站托管**
+
+官方入口文档：
+
+- <https://cloud.tencent.com/document/product/876/46900>
+
+### 2. 新建环境
+
+如果你还没有 CloudBase 环境：
+
+- 先创建一个环境
+- 环境名称随意，比如：`edu-policy-app`
+
+### 3. 进入静态网站托管
+
+进入环境后，选择：
+
+- **静态网站托管**
+
+### 4. 选择上传方式
+
+优先用：
+
+- **上传文件夹 / 上传代码**
+
+不要先折腾 Git 仓库导入。
+
+### 5. 上传内容
+
+上传这个目录的内容：
+
+- `D:\trae\edu policies\dist`
 
 注意：
 
-- 如果项目加速区域包含**中国大陆可用区**
-- 并且你要绑定自定义域名
-- 官方要求先完成 **ICP 备案**
+- 上传的是 `dist` 里的文件
+- 不要把整个项目根目录传上去
 
-参考官方说明：
+### 6. 等待发布完成
 
-- <https://pages.edgeone.ai/document/custom-domain>
-
----
-
-## 三、环境变量
-
-如果线上还要保留 AI 能力，在 Pages 项目里配置：
-
-- `VITE_DOUBAO_API_KEY`
-- `VITE_DOUBAO_MODEL`
-- `VITE_DOUBAO_BASE_URL`
-
-不配的话，AI 相关功能可能只能走兜底逻辑。
+发布成功后，CloudBase 会给你一个默认访问域名。  
+你先拿这个域名做访问测试。
 
 ---
 
-## 四、后续怎么更新
+## 五、现在最推荐的验证顺序
 
-以后你每次改完项目，只要：
+拿到 CloudBase 默认域名后，先测这几件事：
 
-```powershell
-cd "D:\trae\edu policies"
-git add .
-git commit -m "feat: 更新项目"
-git push
-```
-
-EdgeOne Pages 会自动重新拉 GitHub 仓库并重新部署。
-
-也就是说：
-
-- GitHub 仓库更新
-- EdgeOne Pages 自动更新
-- 试用链接同步变成最新版
-
----
-
-## 五、上线后先检查这些
-
-建议你先用手机和电脑各试一遍：
+### 手机和电脑都试
 
 - 首页搜索
 - 卡片展开 / 关闭
@@ -141,76 +161,147 @@ EdgeOne Pages 会自动重新拉 GitHub 仓库并重新部署。
 - 正文高亮工具条
 - 自定义卡片抓取
 
-特别注意：
+### 不同网络都试
 
-- 收藏、笔记、做题统计目前仍保存在各自浏览器本地，不是云同步
-- 不同网站正文抓取效果会有差异
+- 家宽 Wi-Fi
+- 手机流量
+- 不开 VPN
 
----
+目标很简单：
 
-## 六、最稳的长期路线
-
-建议你按这个顺序走：
-
-1. 先把项目部署到 EdgeOne Pages
-2. 先用平台给的项目域名测试国内访问
-3. 确认功能稳定后，绑定你自己的域名
-4. 如果未来长期正式给国内用户使用，再补 ICP 备案
-5. Web 版本稳定后，再用 Capacitor 封装成 App
+> 先确认默认域名下，国内访问是不是已经够稳定。
 
 ---
 
-## 七、为什么不再优先用 Vercel
+## 六、`hoodyg.online` 什么时候再绑
 
-不是项目代码问题，而是访问链路问题：
+你已经买了：
 
-- `vercel.app` 在国内访问经常不稳定
-- 你现在的目标是让国内大多数人都能更顺畅访问
-- 所以更适合改成国内访问更友好的平台路线
+- `hoodyg.online`
+
+这个域名现在建议先作为**第二阶段**处理，不要一上来就卡在它身上。
+
+### 先后顺序建议
+
+#### 现在先做
+
+- 用 CloudBase 默认域名把网站先放出来
+
+#### 后面再做
+
+- 再考虑把 `www.hoodyg.online` 绑上去
+
+我建议以后优先绑定：
+
+- `www.hoodyg.online`
+
+而不是先直接绑根域名：
+
+- `hoodyg.online`
+
+这样更稳、更好处理。
 
 ---
 
-## 八、备选方案
+## 七、关于备案，先提前知道
 
-### 备选 1：阿里云 OSS 静态网站
+如果你以后要让 `hoodyg.online` 成为**正式、国内稳定访问的域名**，备案大概率绕不过去。
 
-优点：
+腾讯云官方 FAQ 目前明确提到：
 
-- 更传统、更稳定
-- 很适合长期国内静态站
-
-缺点：
-
-- 域名、自定义访问、CDN、备案链路更重
-- 你现在上手成本会比 EdgeOne Pages 高
+- CloudBase 资源本身**不能直接作为 ICP 备案接入资源**
+- 如果要绑定已备案自定义域名，通常建议准备：
+  - 轻量应用服务器
+  - 云服务器 CVM
+  - 或云开发轻量应用服务器
 
 官方参考：
 
-- OSS 静态网站：<https://www.alibabacloud.com/help/en/oss/user-guide/tutorial-use-a-custom-domain-name-to-configure-static-website-hosting>
-- 中国大陆自定义域名需要 ICP：<https://www.alibabacloud.com/help/doc-detail/67323.html>
+- ICP 备案相关 FAQ：<https://cloud.tencent.com/document/product/876/128405>
 
-### 备选 2：腾讯云 COS 静态网站
+所以这件事我们分两步看：
 
-优点：
+### 现在
 
-- 也是国内静态托管路线
+- 先用默认域名，让网站可访问
 
-缺点：
+### 以后
 
-- 和 OSS 一样，更适合后期正式化，不是你现在最省事的第一步
-
-官方参考：
-
-- COS 静态网站：<https://www.tencentcloud.com/document/product/436/9512?lang=en>
+- 再做备案
+- 再绑定 `www.hoodyg.online`
 
 ---
 
-## 结论
+## 八、现在不要买的东西
 
-如果你的目标是：
+你前面在域名购买页看到的这些搭配项，现在都不是必须的：
 
-> **让国内绝大多数人更稳定地打开这个项目，并且后续还能方便更新**
+- 图片处理包
+- 点播包
+- CDN 流量包
 
-那当前最合适的方案就是：
+现在你真正需要的只有：
 
-> **GitHub + 腾讯 EdgeOne Pages**
+- 域名本身
+- CloudBase 静态网站托管
+
+---
+
+## 九、以后怎么更新
+
+你现在的长期维护方式仍然保持简单：
+
+```powershell
+cd "D:\trae\edu policies"
+git add .
+git commit -m "feat: 更新项目"
+git push
+```
+
+然后本地再执行：
+
+```powershell
+cd "D:\trae\edu policies"
+npm run build
+```
+
+如果你当前 CloudBase 是手动上传 `dist`，那更新流程就是：
+
+1. 本地改代码
+2. `git push`
+3. `npm run build`
+4. 重新上传新的 `dist`
+
+这不是最自动化的，但现在是最稳的。
+
+---
+
+## 十、当前最务实的结论
+
+你现在最该做的不是继续折腾国际站自定义域名，而是：
+
+> **先把项目迁到腾讯云中国站 CloudBase 静态网站托管，并先用默认域名对外试用。**
+
+等默认域名跑稳了，我们再决定：
+
+- 要不要继续折腾 `www.hoodyg.online`
+- 什么时候备案
+- 什么时候切成正式官网
+
+---
+
+## 十一、你下一步只做这件事
+
+打开腾讯云中国站：
+
+- **云开发 CloudBase**
+- **静态网站托管**
+
+然后按上面步骤：
+
+1. 新建环境
+2. 进入静态网站托管
+3. 上传 `dist`
+4. 拿默认域名测试
+
+如果你做到了这一步，下一条把页面截图发我，我继续带你往下配。

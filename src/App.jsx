@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { HashRouter } from 'react-router-dom';
 import HomePage from './components/HomePage';
@@ -960,6 +960,55 @@ function App() {
     };
   };
 
+  const handleDeleteCard = (cardId) => {
+    const existingCard = newsList.find((news) => news.id === cardId);
+    if (!existingCard || existingCard.source !== '自定义') {
+      return { ok: false };
+    }
+
+    setNewsList((prev) => prev.filter((item) => item.id !== cardId));
+    setSavedNews((prev) => prev.filter((item) => item.id !== cardId));
+    setNotes((prev) => {
+      const nextNotes = { ...prev };
+      delete nextNotes[cardId];
+      return nextNotes;
+    });
+    setQuestions((prev) => {
+      const nextQuestions = { ...prev };
+      delete nextQuestions[cardId];
+      return nextQuestions;
+    });
+    setQuestionStats((prev) => {
+      const nextStats = { ...prev };
+      Object.keys(nextStats).forEach((key) => {
+        if (key.startsWith(`${cardId}::`)) {
+          delete nextStats[key];
+        }
+      });
+      return nextStats;
+    });
+    setUserAnswers((prev) => {
+      const nextAnswers = { ...prev };
+      Object.keys(nextAnswers).forEach((key) => {
+        if (key.startsWith(`${cardId}::`)) {
+          delete nextAnswers[key];
+        }
+      });
+      return nextAnswers;
+    });
+    setSubmittedAnswers((prev) => {
+      const nextAnswers = { ...prev };
+      Object.keys(nextAnswers).forEach((key) => {
+        if (key.startsWith(`${cardId}::`)) {
+          delete nextAnswers[key];
+        }
+      });
+      return nextAnswers;
+    });
+
+    return { ok: true };
+  };
+
   // 收藏功能
   const handleSaveNews = (newsId) => {
     const newsToSave = newsList.find(news => news.id === newsId);
@@ -991,12 +1040,13 @@ function App() {
           onSaveNews={handleSaveNews}
           onRemoveSavedNews={handleRemoveSavedNews}
           onChangeHomeListMode={setHomeListMode}
+          onDeleteCard={handleDeleteCard}
           isMobile={isMobile}
         />
         
         {/* 主内容区 */}
         <div style={{
-          padding: isMobile ? '88px 12px 24px' : '20px',
+          padding: isMobile ? '12px 12px 24px' : '20px',
           maxWidth: isMobile ? '100%' : '1200px',
           margin: isMobile ? '0 auto' : '0 0 0 70px',
           minHeight: '100vh'
@@ -1004,15 +1054,18 @@ function App() {
           {/* 搜索栏 */}
           <div style={{
             position: 'sticky',
-            top: isMobile ? '72px' : '0',
+            top: 0,
             zIndex: 90,
-            padding: isMobile ? '8px 0 10px' : '0 0 10px',
-            background: 'transparent',
-            boxShadow: 'none'
+            padding: isMobile
+              ? (homeListMode !== 'all' ? '10px 0 12px' : '10px 0 5px')
+              : '0 0 10px',
+            background: isMobile ? '#F5F6F8' : 'transparent',
+            boxShadow: 'none',
+            borderRadius: 0
           }}>
-            <SearchBar onSearch={setSearchTerm} />
+            <SearchBar onSearch={setSearchTerm} isMobile={isMobile} showTopTitle={isMobile} />
             {homeListMode !== 'all' && (
-              <div style={{ marginTop: '6px' }}>
+              <div style={{ marginTop: isMobile ? '8px' : '6px' }}>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -1067,6 +1120,7 @@ function App() {
                     searchTerm={searchTerm}
                     onSaveNews={handleSaveNews}
                     onUpdateCard={handleUpdateCard}
+                    onDeleteCard={handleDeleteCard}
                     notes={notes}
                     setNotes={setNotes}
                     contentMarks={contentMarks}
@@ -1090,6 +1144,7 @@ function App() {
                     searchTerm={searchTerm}
                     onSaveNews={handleSaveNews}
                     onUpdateCard={handleUpdateCard}
+                    onDeleteCard={handleDeleteCard}
                     notes={notes}
                     setNotes={setNotes}
                     contentMarks={contentMarks}

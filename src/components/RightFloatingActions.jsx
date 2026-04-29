@@ -13,6 +13,21 @@ const floatingActionStyle = {
   textDecoration: 'none'
 };
 
+const getMobileActionStyle = (overrides = {}) => ({
+  width: '42px',
+  minWidth: '42px',
+  maxWidth: '42px',
+  height: '42px',
+  minHeight: '42px',
+  maxHeight: '42px',
+  aspectRatio: '1 / 1',
+  padding: 0,
+  justifyContent: 'center',
+  gap: 0,
+  flex: '0 0 auto',
+  ...overrides
+});
+
 const RightFloatingActions = ({
   isMobile,
   aiButtonRef,
@@ -42,11 +57,11 @@ const RightFloatingActions = ({
     <div
       style={{
         position: 'fixed',
-        right: isMobile ? '18px' : '26px',
-        bottom: isMobile ? '94px' : '64px',
+        right: isMobile ? '8px' : '26px',
+        bottom: isMobile ? '16px' : '64px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px',
+        gap: isMobile ? '8px' : '10px',
         zIndex: 1002
       }}
     >
@@ -59,31 +74,38 @@ const RightFloatingActions = ({
         }}
         style={{
           ...floatingActionStyle,
+          ...(isMobile ? getMobileActionStyle() : { flex: '0 0 auto' }),
           borderColor: '#dbeafe',
           background: '#eff6ff',
           color: '#1d4ed8',
           justifyContent: 'center',
           gap: '10px'
         }}
+        title="AI助手"
+        aria-label="AI助手"
       >
-        <SparkleIcon size={20} color="#1d4ed8" />
-        AI助手
+        <SparkleIcon size={isMobile ? 18 : 20} color="#1d4ed8" />
+        {!isMobile && 'AI助手'}
       </button>
       <button
         type="button"
         onClick={() => onSaveNews(fullScreenNews.id)}
         style={{
           ...floatingActionStyle,
+          ...(isMobile ? getMobileActionStyle() : { flex: '0 0 auto' }),
           color: isSaved(fullScreenNews.id) ? '#f59e0b' : '#334155',
+          justifyContent: 'center',
           gap: '10px'
         }}
+        title={isSaved(fullScreenNews.id) ? '已收藏' : '收藏'}
+        aria-label={isSaved(fullScreenNews.id) ? '已收藏' : '收藏'}
       >
         <BookmarkIcon
           filled={isSaved(fullScreenNews.id)}
-          size={20}
+          size={isMobile ? 18 : 20}
           color={isSaved(fullScreenNews.id) ? '#f59e0b' : '#334155'}
         />
-        {isSaved(fullScreenNews.id) ? '已收藏' : '收藏'}
+        {!isMobile && (isSaved(fullScreenNews.id) ? '已收藏' : '收藏')}
       </button>
       <button
         ref={sourceButtonRef}
@@ -96,6 +118,8 @@ const RightFloatingActions = ({
         }}
         style={{
           ...floatingActionStyle,
+          ...(isMobile ? getMobileActionStyle() : { flex: '0 0 auto' }),
+          justifyContent: 'center',
           cursor: fullScreenReferences.length ? 'pointer' : 'not-allowed',
           opacity: fullScreenReferences.length ? 1 : 0.45,
           gap: '10px'
@@ -107,9 +131,16 @@ const RightFloatingActions = ({
               ? '打开官方来源'
               : '查看全部来源链接'
         }
+        aria-label={
+          !fullScreenReferences.length
+            ? '当前没有可用来源'
+            : fullScreenReferences.length === 1
+              ? '打开来源链接'
+              : '查看全部来源'
+        }
       >
-        <LinkIcon size={20} />
-        来源链接
+        <LinkIcon size={isMobile ? 18 : 20} />
+        {!isMobile && '来源链接'}
       </button>
     </div>
     {isSourceMenuOpen && fullScreenReferences.length > 1 && (
@@ -118,8 +149,8 @@ const RightFloatingActions = ({
         data-popup-layer="true"
         style={{
           position: 'fixed',
-          right: isMobile ? '18px' : '26px',
-          bottom: isMobile ? '156px' : '128px',
+          right: isMobile ? '12px' : '26px',
+          bottom: isMobile ? '190px' : '128px',
           width: isMobile ? 'calc(100vw - 36px)' : '360px',
           maxWidth: 'calc(100vw - 36px)',
           background: '#fff',
@@ -238,8 +269,8 @@ const RightFloatingActions = ({
         ref={aiPopupRef}
         style={{
           position: 'fixed',
-          right: isMobile ? '18px' : '26px',
-          bottom: isMobile ? '248px' : '220px',
+          right: isMobile ? '12px' : '26px',
+          bottom: isMobile ? '286px' : '220px',
           width: isMobile ? 'calc(100vw - 36px)' : '360px',
           maxWidth: 'calc(100vw - 36px)',
           background: '#fff',
